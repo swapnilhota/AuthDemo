@@ -18,6 +18,15 @@ app.set('views', 'views');
 
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', (req, res) => {
+    res.send(`
+        <h1>Home Page</h1>
+        <a href="/secret">Want to see a Secret?</a>
+        <a href="/register">Register</a>
+        <a href="/login">Login</a>
+    `)
+})
+
 app.get('/register', (req, res) => {
     res.render('register');
 })
@@ -25,14 +34,20 @@ app.get('/register', (req, res) => {
 app.post('/register', async (req, res) => {
     const { username, password } = req.body;
     const hash = await bcrypt.hash(password, 12);
+    const user = new User({
+        username,
+        password: hash
+    })
+    await user.save();
+    res.redirect('/');
 })
 
-app.get('/', (req, res) => {
-    res.send(`
-        <h1>Home Page</h1>
-        <a href="/secret">Want to see a Secret?</a>
-        <a href="/register">Register</a>
-    `)
+app.get('/login', (req, res) => {
+    res.render('login');
+})
+
+app.post('/login', (req, res) => {
+    res.send(req.body);
 })
 
 app.get('/secret', (req, res) => {
