@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const User = require('./models/user');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 mongoose.connect('mongodb://localhost:27017/authDemo', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
     .then(() => {
@@ -22,7 +23,8 @@ app.get('/register', (req, res) => {
 })
 
 app.post('/register', async (req, res) => {
-
+    const { username, password } = req.body;
+    const hash = await bcrypt.hash(password, 12);
 })
 
 app.get('/', (req, res) => {
